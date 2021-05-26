@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 
+
 class OrderController extends Controller
 {
     /**
@@ -24,8 +25,8 @@ class OrderController extends Controller
      */
     public function create()
     {
-       
-       return view ('order.create');
+       $statuses = Status::all();
+       return view ('order.create')->with('statuses', $statuses);
 
     }
 

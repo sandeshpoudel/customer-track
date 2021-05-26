@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Status;
 use Illuminate\Http\Request;
 
 class StatusController extends Controller
@@ -13,7 +14,8 @@ class StatusController extends Controller
      */
     public function index()
     {
-        return view ('status.index');
+        $statuses = Status::get()->sortByDesc('created_at');
+        return view('status.index')->with('statuses', $statuses);
     }
 
     /**
@@ -34,7 +36,14 @@ class StatusController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'name' => 'required',
+        ]);
+        
+        $status = new Status;
+        $status->name = $request->input('name');
+        $status->save();
+        return redirect('status')->with('success', 'successfully created new status');
     }
 
     /**
@@ -56,7 +65,8 @@ class StatusController extends Controller
      */
     public function edit($id)
     {
-        //
+        $status = Status::find($id);
+        return view('status.edit')->with('status', $status);
     }
 
     /**
@@ -68,7 +78,16 @@ class StatusController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'name' => 'required',
+        ]);
+        
+        $status = Status::find($id);
+        $status->name = $request->input('name');
+        $status->save();
+        return redirect('status')->with('success', 'successfully Updated your status');
+    
+
     }
 
     /**
@@ -79,6 +98,9 @@ class StatusController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $status = Status::find($id);
+        $status->delete();
+
+        return redirect ('status')->with('success', 'Status deleted successfully');
     }
 }
